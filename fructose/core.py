@@ -7,11 +7,12 @@ logger = logging.getLogger(__name__)
 
 class Core:
     def __init__(self, folder):
-        if not os.path.isfile("config.json"):
+        config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
+        if not os.path.isfile(config_path):
             logger.error("Missing config file. Please specify config using \"fructose setup\".")
             exit()
         try:
-            with open("config.json") as file:
+            with open(config_path) as file:
                 config = json.load(file)
                 self._url = config["remote"]
                 self._password = config["password"]
@@ -45,13 +46,15 @@ class Core:
                 directory = "" 
             else:
                 directory  = os.path.relpath(root, root_top)
-            data["subdirectories"] = [os.path.join(directory, folder) for folder in subdirectories]
             file_data = {}
-            for file in files:
+            file_paths = []
+            for index, file in enumerate(files):
                 current_path = os.path.join(directory, file)
                 base_path = os.path.join(root_top, current_path)
-                file_data.setdefault(current_path, open(base_path, "rb"))
-            data.setdefault("subdirectories", [])
+                file_data.setdefault(str(index), open(base_path, "rb"))
+                file_paths.append(current_path.replace(os.sep, "/"))
+            data.setdefault("subdirectories", [os.path.join(directory, folder).replace(os.sep, "/") for folder in subdirectories])
+            data.setdefault("paths", file_paths)
             try: 
                 response = requests.post(self._url, {
                     "password": self._password,

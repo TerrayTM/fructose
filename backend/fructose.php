@@ -33,11 +33,13 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                 }
             }
 
-            foreach ($_FILES as $path => $data) {
-                if ($data['tmp_name'] !== "") {
-                    $new_path = __DIR__ . "/" . $path;
-                
-                    move_uploaded_file($data['tmp_name'], $new_path);
+            for ($i = 0; $i < count($data->paths); ++$i) {
+                $current = $_FILES[strval($i)]['tmp_name'];
+
+                if ($current !== "") {
+                    $new_path = __DIR__ . "/" . $data->paths[$i];
+
+                    move_uploaded_file($current, $new_path);
                 }
             }
 
