@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as file:
 setup(
     name="fructose",
     packages=["fructose"],
-    version="1.0.0",
+    version="1.0.1",
     description= "Deployment CLI for synchronizing distributions with server.",
     long_description=long_description,
     long_description_content_type="text/markdown",
